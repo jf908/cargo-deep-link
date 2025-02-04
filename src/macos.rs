@@ -20,9 +20,7 @@ type THandler = OnceLock<Mutex<Box<dyn FnMut(String) + Send + 'static>>>;
 // If the Mutex turns out to be a problem, or FnMut turns out to be useless, we can remove the Mutex and turn FnMut into Fn
 static HANDLER: THandler = OnceLock::new();
 
-pub fn register<F: FnMut(String) + Send + 'static>(_scheme: &str, handler: F) -> Result<()> {
-    listen(handler)?;
-
+pub fn register(_scheme: &str) -> Result<()> {
     Ok(())
 }
 

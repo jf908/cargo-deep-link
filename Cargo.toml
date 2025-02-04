@@ -1,7 +1,11 @@
 [package]
 name = "cargo-deep-link"
 version = "0.1.0"
-authors = ["FabianLars <fabianlars@fabianlars.de>", "jf908"]
+authors = [
+    "jf908",
+    "Tauri Programme within The Commons Conservancy",
+    "FabianLars <fabianlars@fabianlars.de>",
+]
 description = "A library for deep linking support"
 repository = "https://github.com/jf908/cargo-deep-link"
 edition = "2021"
@@ -15,13 +19,17 @@ dirs = "5"
 log = "0.4"
 
 [target.'cfg(windows)'.dependencies]
-interprocess = { version = "1.2", default-features = false }
-windows-sys = { version = "0.52.0", features = [
+windows-sys = { version = "0.59.0", features = [
+    "Win32_System_Threading",
+    "Win32_System_DataExchange",
     "Win32_Foundation",
-    "Win32_UI_Input_KeyboardAndMouse",
     "Win32_UI_WindowsAndMessaging",
+    "Win32_Security",
+    "Win32_System_LibraryLoader",
+    "Win32_Graphics_Gdi",
 ] }
-winreg = "0.55.0"
+dunce = "1"
+windows-registry = "0.4"
 
 [target.'cfg(target_os = "macos")'.dependencies]
 objc2 = "0.4.1"

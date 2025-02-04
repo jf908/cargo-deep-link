@@ -4,6 +4,8 @@ use std::{
     sync::OnceLock,
 };
 
+pub(crate) type SingleInstanceCallback = dyn FnMut(Vec<String>, String) + Send + Sync + 'static;
+
 #[cfg(target_os = "windows")]
 #[path = "windows.rs"]
 mod platform_impl;
@@ -15,6 +17,16 @@ mod platform_impl;
 mod platform_impl;
 
 static ID: OnceLock<String> = OnceLock::new();
+
+// pub fn init<F: FnMut(Vec<String>, String) + Send + Sync + 'static>(mut f: F) {
+//     platform_impl::init(Box::new(move |args, cwd| {
+//         #[cfg(feature = "deep-link")]
+//         if let Some(deep_link) = app.try_state::<tauri_plugin_deep_link::DeepLink<R>>() {
+//             deep_link.handle_cli_arguments(args.iter());
+//         }
+//         f(args, cwd)
+//     }))
+// }
 
 /// This function is meant for use-cases where the default [`prepare()`] function can't be used.
 ///
@@ -32,8 +44,8 @@ pub fn set_identifier(identifier: &str) -> Result<()> {
 /// ## Platform-specific:
 ///
 /// - **macOS**: On macOS schemes must be defined in an Info.plist file, therefore this function only calls [`listen()`] without registering the scheme. This function can only be called once on macOS.
-pub fn register<F: FnMut(String) + Send + 'static>(scheme: &str, handler: F) -> Result<()> {
-    platform_impl::register(scheme, handler)
+pub fn register(scheme: &str) -> Result<()> {
+    platform_impl::register(scheme)
 }
 
 /// Starts the event listener without registering any schemes.
@@ -41,7 +53,7 @@ pub fn register<F: FnMut(String) + Send + 'static>(scheme: &str, handler: F) -> 
 /// ## Platform-specific:
 ///
 /// - **macOS**: This function can only be called once on macOS.
-pub fn listen<F: FnMut(String) + Send + 'static>(handler: F) -> Result<()> {
+pub fn listen<F: FnMut(String) + Send + Sync + 'static>(handler: F) -> Result<()> {
     platform_impl::listen(handler)
 }
 
