@@ -41,7 +41,7 @@ pub fn unregister(scheme: &str) -> Result<()> {
 
 pub fn listen<F: FnMut(String) + Sync + Send + 'static>(mut handler: F) -> Result<()> {
     windows_single::init(Box::new(move |args, _| {
-        handler(args.join(" "));
+        handler(args.into_iter().nth(1).unwrap_or_default());
     }));
 
     Ok(())
