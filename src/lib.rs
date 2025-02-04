@@ -76,6 +76,12 @@ pub fn prepare(identifier: &str) {
     platform_impl::prepare(identifier)
 }
 
+/// TODO: Windows-only for now
+#[cfg(target_os = "windows")]
+pub fn destroy() {
+    platform_impl::destroy()
+}
+
 /// Helper to get current exe path
 pub(crate) fn current_exe() -> std::io::Result<PathBuf> {
     let path = std::env::current_exe()?;

@@ -76,17 +76,17 @@ pub fn init(f: Box<SingleInstanceCallback>) {
     }
 }
 
-// pub fn destroy() {
-//     if let Some(hmutex) = MUTEX_HANDLE.get() {
-//         unsafe {
-//             ReleaseMutex(hmutex.0 as _);
-//             CloseHandle(hmutex.0 as _);
-//         }
-//     }
-//     if let Some(hwnd) = TARGET_WINDOW_HANDLE.get() {
-//         unsafe { DestroyWindow(hwnd.0 as _) };
-//     }
-// }
+pub fn destroy() {
+    if let Some(hmutex) = MUTEX_HANDLE.get() {
+        unsafe {
+            ReleaseMutex(hmutex.0 as _);
+            CloseHandle(hmutex.0 as _);
+        }
+    }
+    if let Some(hwnd) = TARGET_WINDOW_HANDLE.get() {
+        unsafe { DestroyWindow(hwnd.0 as _) };
+    }
+}
 
 unsafe extern "system" fn single_instance_window_proc(
     hwnd: HWND,
@@ -94,7 +94,7 @@ unsafe extern "system" fn single_instance_window_proc(
     wparam: WPARAM,
     lparam: LPARAM,
 ) -> LRESULT {
-    let data_ptr = GetWindowLongPtrW(hwnd, GWL_USERDATA) as *mut (Box<SingleInstanceCallback>);
+    let data_ptr = GetWindowLongPtrW(hwnd, GWL_USERDATA) as *mut Box<SingleInstanceCallback>;
     let callback = &mut *data_ptr;
 
     match msg {

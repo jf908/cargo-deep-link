@@ -51,3 +51,7 @@ pub fn prepare(identifier: &str) {
     ID.set(identifier.to_string())
         .expect("prepare() called more than once with different identifiers.");
 }
+
+pub fn destroy() {
+    windows_single::destroy();
+}
