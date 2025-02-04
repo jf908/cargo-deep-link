@@ -18,7 +18,7 @@ pub fn register<F: FnMut(String) + Send + 'static>(scheme: &str, handler: F) -> 
     let hkcu = RegKey::predef(HKEY_CURRENT_USER);
     let base = Path::new("Software").join("Classes").join(scheme);
 
-    let exe = tauri_utils::platform::current_exe()?
+    let exe = crate::current_exe()?
         .display()
         .to_string()
         .replace("\\\\?\\", "");

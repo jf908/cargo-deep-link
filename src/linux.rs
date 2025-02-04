@@ -18,7 +18,7 @@ pub fn register<F: FnMut(String) + Send + 'static>(scheme: &str, handler: F) -> 
 
     create_dir_all(&target)?;
 
-    let exe = tauri_utils::platform::current_exe()?;
+    let exe = crate::current_exe()?;
 
     let file_name = format!(
         "{}-handler.desktop",
@@ -70,7 +70,7 @@ pub fn unregister(_scheme: &str) -> Result<()> {
     target.push("applications");
     target.push(format!(
         "{}-handler.desktop",
-        tauri_utils::platform::current_exe()?
+        crate::current_exe()?
             .file_name()
             .ok_or_else(|| Error::new(
                 ErrorKind::NotFound,

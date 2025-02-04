@@ -1,6 +1,8 @@
-use std::io::{ErrorKind, Result};
-
-use once_cell::sync::OnceCell;
+use std::{
+    io::{ErrorKind, Result},
+    path::PathBuf,
+    sync::OnceLock,
+};
 
 #[cfg(target_os = "windows")]
 #[path = "windows.rs"]
@@ -12,7 +14,7 @@ mod platform_impl;
 #[path = "macos.rs"]
 mod platform_impl;
 
-static ID: OnceCell<String> = OnceCell::new();
+static ID: OnceLock<String> = OnceLock::new();
 
 /// This function is meant for use-cases where the default [`prepare()`] function can't be used.
 ///
@@ -60,4 +62,11 @@ pub fn unregister(scheme: &str) -> Result<()> {
 /// - **macOS**: Only registers the identifier (only relevant in debug mode). It does not interact with the primary instance and does not exit the app.
 pub fn prepare(identifier: &str) {
     platform_impl::prepare(identifier)
+}
+
+/// Helper to get current exe path
+pub(crate) fn current_exe() -> std::io::Result<PathBuf> {
+    let path = std::env::current_exe()?;
+
+    path.canonicalize()
 }
